@@ -93,11 +93,14 @@ app.use((err, req, res, _next) => {
   res.status(500).json({ success: false, error: 'Internal server error.' });
 });
 
-// ── Start ─────────────────────────────────────────────────────
-app.listen(PORT, () => {
-  console.log(`\n🚀  BD Lookup Proxy running on http://localhost:${PORT}`);
-  console.log(`🔑  Auth configured: ${auth.isConfigured() ? 'YES' : 'NO (using public endpoints)'}`);
-  console.log(`📋  Health check:    http://localhost:${PORT}/health\n`);
-});
+// Only bind a port when running locally — Vercel handles this in prod
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`\n🚀  BD Lookup Proxy running on http://localhost:${PORT}`);
+    console.log(`🔑  Auth configured: ${auth.isConfigured() ? 'YES' : 'NO (using public endpoints)'}`);
+    console.log(`📋  Health check:    http://localhost:${PORT}/health\n`);
+  });
+}
 
+// Vercel needs the app exported as a module
 module.exports = app;
